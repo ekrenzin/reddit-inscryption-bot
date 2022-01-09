@@ -1,0 +1,11 @@
+{
+    "cardname1": {
+        "name" : "Card Name One",
+        "attack": 1,
+        "health": 3,
+        "costType": "Blood",
+        "sigils": "Poison",
+        "misc": "This is test data, not a real card",
+        "identifiers": ["card one", "card 1", "first card"]
+    }
+}

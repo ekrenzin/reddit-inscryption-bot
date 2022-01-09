@@ -1,0 +1,7 @@
+{
+    "sigilname1": {
+        "name" : "Sigil Name One",
+        "effect": "This sigil has x effect",
+        "foundOn": ["mantis", "elk"]
+    } 
+}

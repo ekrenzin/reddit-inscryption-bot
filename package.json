@@ -1,0 +1,31 @@
+{
+  "name": "reddit-inscryption-bot",
+  "version": "1.0.0",
+  "description": "Reddit inscryption bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ekrenzin/reddit-inscryption-bot.git"
+  },
+  "author": "Ean Krenzin-Blank",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ekrenzin/reddit-inscryption-bot/issues"
+  },
+  "homepage": "https://github.com/ekrenzin/reddit-inscryption-bot#readme",
+  "dependencies": {
+    "csv-writer": "^1.6.0",
+    "dotenv": "^10.0.0",
+    "events": "^3.3.0",
+    "json-2-csv": "^3.15.1",
+    "queue": "^6.0.2",
+    "snoostorm": "^1.5.2",
+    "snoowrap": "^1.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.8"
+  }
+}
