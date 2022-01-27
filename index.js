@@ -1,8 +1,12 @@
 const dotenv = require('dotenv')
+const fs = require('fs')
 const Snoowrap = require('snoowrap')
 const snoostorm = require('snoostorm')
-const { InboxStream, CommentStream, SubmissionStream } = snoostorm
+const fetch = require('node-fetch')
+const { CommentStream } = snoostorm
+const zlib = require("zlib");
 const queue = require('queue')
+const Papa = require('papaparse')
 const { createMessage } = require('./src/createMessage')
 
 dotenv.config()
@@ -33,7 +37,7 @@ comments.on("item", async (comment) => {
         if (msg.length > 1) {
             const sendMessage =
                 `I found these in your comment:   
-
+                
                 ${msg}  
 
 
@@ -63,3 +67,35 @@ setInterval(() => {
         }
     }
 }, 5000);
+
+setInterval(loadData, 1000 * 60 * 60) //resync data once an hour
+async function loadData() {
+    const cardsRes = await fetch('https://docs.google.com/spreadsheets/d/19VcAobU2h4uyYJLA2vkxqe1eMVmN3wwrJOPLf6-LiWg/gviz/tq?tqx=out:csv&sheet=cards')
+    const itemsRes = await fetch('https://docs.google.com/spreadsheets/d/19VcAobU2h4uyYJLA2vkxqe1eMVmN3wwrJOPLf6-LiWg/gviz/tq?tqx=out:csv&sheet=items')
+    const sigilsRes = await fetch('https://docs.google.com/spreadsheets/d/19VcAobU2h4uyYJLA2vkxqe1eMVmN3wwrJOPLf6-LiWg/gviz/tq?tqx=out:csv&sheet=sigils')
+    const cardsCSV = await cardsRes.text()
+    const itemsCSV = await itemsRes.text()
+    const sigilsCSV = await sigilsRes.text()
+
+    const jsonConfig = {
+        header: true,
+        skipEmptyLines: 'greedy'
+    }
+
+    const cardsJson = JSON.stringify(Papa.parse(cardsCSV, jsonConfig).data)
+    const itemsJson = JSON.stringify(Papa.parse(itemsCSV, jsonConfig).data)
+    const sigilsJson = JSON.stringify(Papa.parse(sigilsCSV, jsonConfig).data)
+    
+
+    fs.writeFile('src/cards.json', cardsJson, function (err) {
+        if (err) console.log(err);
+    });
+    fs.writeFile('src/sigils.json', sigilsJson, function (err) {
+        if (err) console.log(err);
+    });
+    fs.writeFile('src/items.json', itemsJson, function (err) {
+        if (err) console.log(err);
+    });
+}
+
+loadData()

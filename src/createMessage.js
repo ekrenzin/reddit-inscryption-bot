@@ -2,13 +2,12 @@ const cards = require('./cards.json')
 const items = require('./items.json')
 const sigils = require('./sigils.json')
 
-async function createMessage(parsedText, comment){
+async function createMessage(parsedText, comment) {
     let msg = ''
     for (const text of parsedText) {
-        const cleanedText = text[0].replace(/[^\w\s]/gi, '')
-        const item = items[cleanedText]
-        const sigil = sigils[cleanedText]
-        const card = cards[cleanedText]
+        const item = parseJson(text, items)
+        const sigil = parseJson(text, sigils)
+        const card = parseJson(text, cards)
 
         if (item) {
             const itemMessage = await handleItem(item, comment)
@@ -26,6 +25,20 @@ async function createMessage(parsedText, comment){
 
     return msg
 }
+
+function parseJson(text, json) {
+    let isValid = false
+
+    for (const value of json) {
+        if (text === value.Name) {
+            isValid = true
+        }
+        else if (value.OtherNames.split(',').includes(text)){
+            isValid = true
+        }
+    }
+}
+
 async function handleCard(card, comment) {
     const commentWithReplies = await comment.expandReplies()
     const replies = commentWithReplies.replies
