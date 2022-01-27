@@ -4,7 +4,8 @@
   "description": "Reddit inscryption bot",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "dev": "node index.js",
+    "build": "npm i"
   },
   "repository": {
     "type": "git",

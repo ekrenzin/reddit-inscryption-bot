@@ -4,7 +4,8 @@ const sigils = require('./sigils.json')
 
 async function createMessage(parsedText, comment) {
     let msg = ''
-    for (const text of parsedText) {
+    for (const textData of parsedText) {
+        const text = textData[0].replace(/[^\w]/gi, '')
         const item = parseJson(text, items)
         const sigil = parseJson(text, sigils)
         const card = parseJson(text, cards)
@@ -27,16 +28,18 @@ async function createMessage(parsedText, comment) {
 }
 
 function parseJson(text, json) {
-    let isValid = false
+    let parsedValue = null
 
     for (const value of json) {
         if (text === value.Name) {
-            isValid = true
+            parsedValue = value
         }
         else if (value.OtherNames.split(',').includes(text)){
-            isValid = true
+            parsedValue = value
         }
     }
+
+    return parsedValue
 }
 
 async function handleCard(card, comment) {
