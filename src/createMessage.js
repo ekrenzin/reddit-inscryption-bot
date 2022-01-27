@@ -1,15 +1,13 @@
-const cards = require('./cards.json')
-const items = require('./items.json')
-const sigils = require('./sigils.json')
-
 async function createMessage(parsedText, comment) {
+    const cards = require('./cards.json')
+    const items = require('./items.json')
+    const sigils = require('./sigils.json')
     let msg = ''
     for (const textData of parsedText) {
         const text = textData[0].replace(/[^\w]/gi, '')
         const item = parseJson(text, items)
         const sigil = parseJson(text, sigils)
         const card = parseJson(text, cards)
-
         if (item) {
             const itemMessage = await handleItem(item, comment)
             if (itemMessage) msg = msg + itemMessage
@@ -29,13 +27,15 @@ async function createMessage(parsedText, comment) {
 
 function parseJson(text, json) {
     let parsedValue = null
-
     for (const value of json) {
-        if (text === value.Name) {
+        if (text.toLowerCase() === value.Name.toLowerCase()) {
             parsedValue = value
-        }
-        else if (value.OtherNames.split(',').includes(text)){
-            parsedValue = value
+        } else if (value.OtherNames && value.OtherNames.length > 1) {
+            const otherNames = value.OtherNames.split(',')
+            for (const name of otherNames) {
+                const parsedName = name.replace(" ", '')
+                if (parsedName.toLowerCase()  === text.toLowerCase()) parsedValue = value
+            }
         }
     }
 
@@ -59,13 +59,13 @@ async function handleCard(card, comment) {
 CARD | ${card.Name}
 -- | --
 Description | ${card.Description}
-Wiki Link | ${card.URL}
 Attack | ${card.Attack}
-Tribes | ${card.Tribes}
+Health | ${card.Health}
 Sigils | ${card.Sigils}
-Cost | ${card.Cost}
-Cost Type | ${card["Cost Type"]}
-Hidden Traits | ${card.HiddenTraits}
+Tribe | ${card.Tribes}
+Cost | ${card.Cost} ${card["Cost Type"]}
+Hidden Traits | >!${card.HiddenTraits}!<
+Wiki Link | ${card.URL}
   
 `
 

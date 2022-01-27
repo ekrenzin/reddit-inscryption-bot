@@ -23,8 +23,8 @@ const client = new Snoowrap({
 // Options object is a Snoowrap Listing object, but with subreddit and pollTime options
 const comments = new CommentStream(client, {
     subreddit: "inscryption",
-    limit: 10,
-    pollTime: 5000,
+    limit: 100,
+    pollTime: 10000,
 });
 
 let commentQueue = queue({ results: [] })
@@ -34,7 +34,9 @@ comments.on("item", async (comment) => {
         const commentText = comment.body
         const parsedText = useRegex(commentText)
         if (!parsedText) return
+        if (parsedText.length < 1) return
         const msg = await createMessage(parsedText, comment)
+
         if (msg.length > 1) {
             const sendMessage =
                 `I found these in your comment:   
@@ -53,7 +55,11 @@ comments.on("item", async (comment) => {
 
 function useRegex(input) {
     const regex = /\[[^\]]*\]*.\[[^\]]*\]/g;
-    return [...input.matchAll(regex)];
+    const secondRegex = /\[\[.*\]\]/g
+    let values = []
+    values = [...input.matchAll(regex)];
+    values = [...values, ...input.matchAll(secondRegex)];
+    return values
 }
 
 function shiftCommentQueue() {
@@ -90,7 +96,7 @@ async function loadData() {
         const itemsJson = JSON.stringify(Papa.parse(itemsCSV, jsonConfig).data)
         const sigilsJson = JSON.stringify(Papa.parse(sigilsCSV, jsonConfig).data)
 
-
+        
         fs.writeFile('src/cards.json', cardsJson, function (err) {
             if (err) console.log(err);
         });
@@ -107,3 +113,5 @@ async function loadData() {
 
 cron.schedule("*/10 * * * * *", shiftCommentQueue);
 cron.schedule("0 0 */1 * * *", loadData);
+
+loadData()
