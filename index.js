@@ -21,7 +21,7 @@ const client = new Snoowrap({
 
 // Options object is a Snoowrap Listing object, but with subreddit and pollTime options
 const comments = new CommentStream(client, {
-    subreddit: "ah82h98he28hj9",
+    subreddit: "inscryption",
     limit: 10,
     pollTime: 5000,
 });

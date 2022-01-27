@@ -56,9 +56,16 @@ async function handleCard(card, comment) {
     const message =
         `
   
-CARD | ${card.name}
+CARD | ${card.Name}
 -- | --
-Attack | ${card.attack}
+Description | ${card.Description}
+Wiki Link | ${card.URL}
+Attack | ${card.Attack}
+Tribes | ${card.Tribes}
+Sigils | ${card.Sigils}
+Cost | ${card.Cost}
+Cost Type | ${card["Cost Type"]}
+Hidden Traits | ${card.HiddenTraits}
   
 `
 
